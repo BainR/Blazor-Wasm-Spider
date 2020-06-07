@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWasmSpiderTouch", "BlazorWasmSpiderTouch\BlazorWasmSpiderTouch.csproj", "{2E840072-9149-4DE2-96CC-0760C422E215}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E840072-9149-4DE2-96CC-0760C422E215}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E840072-9149-4DE2-96CC-0760C422E215}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E840072-9149-4DE2-96CC-0760C422E215}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E840072-9149-4DE2-96CC-0760C422E215}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8EEB9FFE-5686-4868-B244-B002DD44B367}
+	EndGlobalSection
+EndGlobal

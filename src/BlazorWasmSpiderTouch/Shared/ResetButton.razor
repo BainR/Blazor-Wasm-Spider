@@ -1,0 +1,20 @@
+﻿@namespace BlazorWasmSpiderTouch.Models
+
+<button class="resetButton" @onclick="@((e) => HandleReset())">Reset</button>
+
+@code {
+    [CascadingParameter] SpiderContainer Container { get; set; }
+
+    async Task HandleReset()
+    {
+        if (Container.Processing)
+        {
+            return;
+        }
+
+        while (Container.MoveList.Any())
+        {
+            await Container.Undo();
+        }
+    }
+}

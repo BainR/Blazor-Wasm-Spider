@@ -1,0 +1,189 @@
+﻿@namespace BlazorWasmSpiderTouch.Models
+
+<div class="spider-container">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    [Parameter] public List<List<PlayingCardModel>> PlayingCards { get; set; }
+    [Parameter] public List<Move> MoveList { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public EventCallback<PlayingCardModel> OnPilesUpdated { get; set; }
+
+    public PlayingCardModel Payload { get; set; }
+    public PlayingCardModel SelectedCard { get; set; }
+    public List<List<PlayingCardModel>> StockPiles  { get { return PlayingCards.GetRange(10, 5); } }
+    public List<List<PlayingCardModel>> FoundationPiles  { get { return PlayingCards.GetRange(15, 8); } }
+    public List<List<PlayingCardModel>> TableauPiles  { get { return PlayingCards.GetRange(0, 10); } }
+    public bool Processing { get; set; }
+
+    public async Task UpdateTableauIdAsync(int destinationTableauId)
+    {
+        int sourceTableauId = Payload.TableauId;
+
+        if (sourceTableauId == destinationTableauId)
+        {
+            return;
+        }
+
+        MoveList.Add(new Move
+        {
+            FromTableauId = sourceTableauId,
+            ToPileId = destinationTableauId,
+            ToFoundationPile = false,
+            Cards = TableauPiles[sourceTableauId - 1].Count - Payload.PileSequence + 1
+        });
+
+        for (int i = Payload.PileSequence; i <= TableauPiles[sourceTableauId - 1].Last().PileSequence; i++)
+        {
+            var card = TableauPiles[sourceTableauId - 1].Single(c => c.PileSequence == i);
+            TableauPiles[sourceTableauId - 1].Remove(card);
+            card.TableauId = destinationTableauId;
+            card.PileSequence = TableauPiles[destinationTableauId - 1].Count + 1;
+            TableauPiles[destinationTableauId - 1].Add(card);
+
+            if (!TableauPiles[sourceTableauId - 1].Any())
+            {
+                break;
+            }
+        }
+
+        if (TableauPiles[sourceTableauId - 1].Any() && TableauPiles[sourceTableauId - 1].Last().IsFaceDown)
+        {
+            TableauPiles[sourceTableauId - 1].Last().IsFaceDown = false;
+            MoveList.Last().TurnFaceDown = true;
+        }
+
+        // This needs to be called in order for PlayingCardList.OnParameterSet to be called.  That refreshes the piles.
+        await OnPilesUpdated.InvokeAsync(Payload);
+    }
+
+    public async Task UpdateFoundationAsync(int foundationPileId)
+    {
+        int payloadPileSequence = Payload.PileSequence;
+        int payloadTableauId = Payload.TableauId;
+
+        MoveList.Add(new Move
+        {
+            FromTableauId = payloadTableauId,
+            ToPileId = foundationPileId,
+            ToFoundationPile = true,
+            Cards = 13
+        });
+
+        for (int i = 0; i < 13; i++)
+        {
+            var card = TableauPiles[payloadTableauId - 1][payloadPileSequence - 1 + i];
+            card.TableauId = 0;
+            card.FoundationId = foundationPileId;
+            card.PileSequence = i + 1;
+            FoundationPiles[foundationPileId - 1].Add(card);
+        }
+        TableauPiles[payloadTableauId - 1].RemoveRange(payloadPileSequence - 1, 13);
+
+        if (TableauPiles[payloadTableauId - 1].Any())
+        {
+            TableauPiles[payloadTableauId - 1].Last().IsFaceDown = false;
+            MoveList.Last().TurnFaceDown = true;
+        }
+
+        await OnPilesUpdated.InvokeAsync(null);
+    }
+
+    public async Task UpdateAllPiles()
+    {
+        await OnPilesUpdated.InvokeAsync(null);
+    }
+
+    public async Task Undo()
+    {
+        if (Processing || !MoveList.Any())
+        {
+            return;
+        }
+
+        Processing = true;
+
+        Move move = MoveList.Last();
+
+        MoveList.RemoveAt(MoveList.Count - 1);
+
+        if (move.ToFoundationPile)
+        {
+            UndoMoveToFoundation(move);
+        }
+        else if (move.Cards > 0)
+        {
+            UndoPlay(move);
+        }
+        else
+        {
+            UndoDeal(move);
+        }
+
+        await OnPilesUpdated.InvokeAsync(null);
+
+        Processing = false;
+    }
+
+    private void UndoMoveToFoundation(Move move)
+    {
+        if (move.TurnFaceDown)
+        {
+            TableauPiles[move.FromTableauId - 1].Last().IsFaceDown = true;
+        }
+
+        for (int i = 0; i < 13; i++)
+        {
+            var card = FoundationPiles[move.ToPileId - 1][i];
+            card.FoundationId = 0;
+            card.TableauId = move.FromTableauId;
+            card.PileSequence = TableauPiles[move.FromTableauId - 1].Count + 1;
+            TableauPiles[move.FromTableauId - 1].Add(card);
+        }
+        FoundationPiles[move.ToPileId - 1].Clear();
+    }
+
+    private void UndoPlay(Move move)
+    {
+        var returnToPile = TableauPiles[move.FromTableauId - 1];
+        var returnFromPile = TableauPiles[move.ToPileId - 1];
+        int returnToPileOffset = returnToPile.Count;
+        int returnFromPileOffset = returnFromPile.Count - move.Cards;
+
+        for (int i = 0; i < move.Cards; i++)
+        {
+            returnToPile.Add(returnFromPile[returnFromPileOffset + i]);
+            returnToPile.Last().TableauId = move.FromTableauId;
+            returnToPile.Last().PileSequence = returnToPile.Count();
+        }
+        returnFromPile.RemoveRange(returnFromPileOffset, move.Cards);
+
+        if (move.TurnFaceDown)
+        {
+            returnToPile[returnToPileOffset - 1].IsFaceDown = true;
+        }
+    }
+
+    private void UndoDeal(Move move)
+    {
+        int stockId = 5;
+        while (StockPiles[stockId - 1].Any())
+        {
+            stockId--;
+        }
+
+        for (int i = 0; i < 10; i++)
+        {
+            var card = TableauPiles[i].Last();
+            card.IsFaceDown = true;
+            card.PileSequence = i;
+            card.StockId = stockId;
+            card.TableauId = 0;
+            StockPiles[stockId - 1].Add(card);
+            TableauPiles[i].RemoveAt(TableauPiles[i].Count - 1);
+        }
+    }
+}

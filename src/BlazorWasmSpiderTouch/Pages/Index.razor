@@ -1,0 +1,146 @@
+﻿@namespace BlazorWasmSpiderTouch.Models
+
+@page "/"
+<div class="spider-wrapper">
+    <SpiderContainer PlayingCards="Cards" MoveList="Moves" OnPilesUpdated="HandlePilesUpdated">
+        <UndoButton />
+        <ResetButton />
+        <NewButton IndexPage="this" />
+        <div class="stock-foundation-row">
+            <div class="stock">
+                <PlayingCardList StockId=5 Cards="Cards[14]" />
+                <PlayingCardList StockId=4 Cards="Cards[13]" />
+                <PlayingCardList StockId=3 Cards="Cards[12]" />
+                <PlayingCardList StockId=2 Cards="Cards[11]" />
+                <PlayingCardList StockId=1 Cards="Cards[10]" />
+            </div>
+            <PlayingCardList FoundationId=1 Cards="Cards[15]" />
+            <PlayingCardList FoundationId=2 Cards="Cards[16]" />
+            <PlayingCardList FoundationId=3 Cards="Cards[17]" />
+            <PlayingCardList FoundationId=4 Cards="Cards[18]" />
+            <PlayingCardList FoundationId=5 Cards="Cards[19]" />
+            <PlayingCardList FoundationId=6 Cards="Cards[20]" />
+            <PlayingCardList FoundationId=7 Cards="Cards[21]" />
+            <PlayingCardList FoundationId=8 Cards="Cards[22]" />
+        </div>
+        <div class="tableau-row">
+            <PlayingCardList TableauId=1 Cards="Cards[0]" />
+            <PlayingCardList TableauId=2 Cards="Cards[1]" />
+            <PlayingCardList TableauId=3 Cards="Cards[2]" />
+            <PlayingCardList TableauId=4 Cards="Cards[3]" />
+            <PlayingCardList TableauId=5 Cards="Cards[4]" />
+            <PlayingCardList TableauId=6 Cards="Cards[5]" />
+            <PlayingCardList TableauId=7 Cards="Cards[6]" />
+            <PlayingCardList TableauId=8 Cards="Cards[7]" />
+            <PlayingCardList TableauId=9 Cards="Cards[8]" />
+            <PlayingCardList TableauId=10 Cards="Cards[9]" />
+        </div>
+    </SpiderContainer>
+</div>
+@code {
+    List<List<PlayingCardModel>> Cards = new List<List<PlayingCardModel>>();
+    List<Move> Moves = new List<Move>();
+
+    protected override void OnInitialized()
+    {
+        NewGame();
+    }
+
+    void HandlePilesUpdated(PlayingCardModel updatedPlayingCard)
+    {
+        // Called by SpiderContainer.UpdateTableauIdAsync
+        // Calling this triggers the PlayingCardList.OnParameterSet method that refreshes the piles.
+    }
+
+    void Shuffle(List<PlayingCardModel> deck)
+    {
+        Random r = new Random();
+
+        for (int n = deck.Count - 1; n > 0; --n)
+        {
+            int k = r.Next(n + 1);
+            PlayingCardModel temp = deck[n];
+            deck[n] = deck[k];
+            deck[k] = temp;
+        }
+    }
+
+    public void NewGame()
+    {
+        Cards.Clear();
+        Moves.Clear();
+
+        var decks = new List<PlayingCardModel>();
+        for (int i = 0; i < 104; i++)
+        {
+            var card = new PlayingCardModel
+            {
+                Id = i + 1,
+                IsFaceDown = true,
+                Suit = i < 52 ? Suit.Spade : Suit.Heart,
+                Value = (i % 13) + 1
+            };
+            decks.Add(card);
+        }
+
+        Shuffle(decks);
+
+        for (int i = 0; i < 10; i++)
+        {
+            Cards.Add(new List<PlayingCardModel>());
+            for (int j = 0; j < 4; j++)
+            {
+                decks[10 * j + i].IsFaceDown = true;
+                decks[10 * j + i].TableauId = i + 1;
+                decks[10 * j + i].PileSequence = j + 1;
+                Cards[i].Add(decks[10 * j + i]);
+            }
+        }
+
+        decks[40].IsFaceDown = true;
+        decks[40].TableauId = 1;
+        decks[40].PileSequence = 5;
+        Cards[0].Add(decks[40]);
+
+        decks[41].IsFaceDown = true;
+        decks[41].TableauId = 4;
+        decks[41].PileSequence = 5;
+        Cards[3].Add(decks[41]);
+
+        decks[42].IsFaceDown = true;
+        decks[42].TableauId = 7;
+        decks[42].PileSequence = 5;
+        Cards[6].Add(decks[42]);
+
+        decks[43].IsFaceDown = true;
+        decks[43].TableauId = 10;
+        decks[43].PileSequence = 5;
+        Cards[9].Add(decks[43]);
+
+        for (int i = 0; i < 10; i++)
+        {
+            decks[44 + i].IsFaceDown = false;
+            decks[44 + i].TableauId = i + 1;
+            decks[44 + i].PileSequence = Cards[i].Count + 1;
+            Cards[i].Add(decks[44 + i]);
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            Cards.Add(new List<PlayingCardModel>());
+            for (int j = 0; j < 10; j++)
+            {
+                decks[54 + 10 * i + j].IsFaceDown = true;
+                decks[54 + 10 * i + j].StockId = i + 1;
+                Cards[10 + i].Add(decks[54 + 10 * i + j]);
+            }
+        }
+
+        for (int i = 0; i < 8; i++)
+        {
+            Cards.Add(new List<PlayingCardModel>());
+        }
+
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,17 @@
+﻿@namespace BlazorWasmSpiderTouch.Models
+
+    <button class="undoButton" @onclick="@((e) => HandleUndo())">Undo</button>
+
+@code {
+    [CascadingParameter] SpiderContainer Container { get; set; }
+
+    async Task HandleUndo()
+    {
+        if (Container.Processing)
+        {
+            return;
+        }
+
+        await Container.Undo();
+    }
+}

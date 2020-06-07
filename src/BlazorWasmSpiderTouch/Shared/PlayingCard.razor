@@ -1,0 +1,138 @@
+﻿@namespace BlazorWasmSpiderTouch.Models
+
+@if (PlayingCardModel.TableauId > 0)
+{
+    <div id="@PlayingCardModel.Id" class="spider-column sequence-@PlayingCardModel.PileSequence" 
+         @onclick="@((e) => HandleColumnClick(@PlayingCardModel))">
+        <img class="playing-card @selected" src="@PlayingCardModel.ImageUrl" alt="@PlayingCardModel.Description" title="@PlayingCardModel.Description" />
+    </div>
+}
+
+@if (PlayingCardModel.StockId > 0)
+{
+    <img class="playing-card" src="@PlayingCardModel.ImageUrl" alt="@PlayingCardModel.Description" title="@PlayingCardModel.Description" @onclick="@((e) => HandleClick())" />
+}
+
+@if (PlayingCardModel.FoundationId > 0)
+{
+    <img class="playing-card" src="@PlayingCardModel.ImageUrl" alt="@PlayingCardModel.Description" title="@PlayingCardModel.Description" />
+}
+
+@code {
+    [CascadingParameter] SpiderContainer Container { get; set; }
+    [Parameter] public PlayingCardModel PlayingCardModel { get; set; }
+    string selected = "";
+
+    protected override void OnParametersSet()
+    {
+        selected = PlayingCardModel.IsSelected ? "selected" : "";
+    }
+
+    private async Task HandleColumnClick(PlayingCardModel selectedPlayingCard)
+    {
+        if (Container.Processing)
+        {
+            return;
+        }
+
+        if (Container.SelectedCard != null && Container.SelectedCard.TableauId == selectedPlayingCard.TableauId)
+        {
+            Container.SelectedCard.IsSelected = false;
+            await Container.UpdateAllPiles();
+            Container.SelectedCard = null;
+            return;
+        }
+
+        if (Container.SelectedCard == null && !selectedPlayingCard.IsFaceDown)
+        {
+            selectedPlayingCard.IsSelected = true;
+            selected = "selected";
+            Container.SelectedCard = selectedPlayingCard;
+            Container.Payload = selectedPlayingCard;
+            await Container.UpdateAllPiles();
+            return;
+        }
+
+        // process move here
+
+        if (Container.Processing)
+        {
+            return;
+        }
+
+        Container.SelectedCard.IsSelected = false;
+        await Container.UpdateAllPiles();
+        Container.Payload = Container.SelectedCard;
+        Container.SelectedCard = null;
+
+        if (Container.TableauPiles[selectedPlayingCard.TableauId - 1].Any())
+        {
+            if (Container.TableauPiles[selectedPlayingCard.TableauId - 1].Last().IsFaceDown ||
+                Container.TableauPiles[selectedPlayingCard.TableauId - 1].Last().Value != Container.Payload.Value + 1)
+            {
+                return;
+            }
+        }
+
+        for (int i = Container.Payload.PileSequence; i < Container.TableauPiles[Container.Payload.TableauId - 1].Count; i++)
+        {
+            if (Container.TableauPiles[Container.Payload.TableauId - 1][i].Suit != Container.TableauPiles[Container.Payload.TableauId - 1][i - 1].Suit
+                || Container.TableauPiles[Container.Payload.TableauId - 1][i].Value != Container.TableauPiles[Container.Payload.TableauId - 1][i - 1].Value - 1)
+            {
+                return;
+            }
+        }
+
+        Container.Processing = true;
+
+        await Container.UpdateTableauIdAsync(selectedPlayingCard.TableauId);
+
+        Container.Processing = false;
+    }
+
+    private async Task HandleClick()
+    {
+        if (Container.Processing)
+        {
+            return;
+        }
+
+        if (PlayingCardModel.StockId > 1 && Container.StockPiles[PlayingCardModel.StockId - 2].Any())
+        {
+            return;
+        }
+
+        for (int i = 0; i < 10; i++)
+        {
+            if (!Container.TableauPiles[i].Any())
+            {
+                return;
+            }
+        }
+
+        Container.Processing = true;
+
+        Container.MoveList.Add(new Move
+        {
+            FromTableauId = 0,
+            ToPileId = 0,
+            ToFoundationPile = false,
+            Cards = 0
+        });
+
+        int stockpileindex = PlayingCardModel.StockId - 1;
+        for (int i = 0; i < 10; i++)
+        {
+            var card = Container.StockPiles[stockpileindex][i];
+            card.StockId = 0;
+            card.TableauId = i + 1;
+            card.IsFaceDown = false;
+            card.PileSequence = Container.TableauPiles[i].Any() ? Container.TableauPiles[i].Max(c => c.PileSequence) + 1 : 1;
+            Container.TableauPiles[i].Add(card);
+        }
+        Container.StockPiles[stockpileindex].Clear();
+        await Container.UpdateAllPiles();
+
+        Container.Processing = false;
+    }
+}

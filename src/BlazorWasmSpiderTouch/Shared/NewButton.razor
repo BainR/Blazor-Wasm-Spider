@@ -1,0 +1,20 @@
+﻿@namespace BlazorWasmSpiderTouch.Models
+
+<button class="newButton" @onclick="@((e) => HandleNew())">New</button>
+
+@code {
+    [CascadingParameter] SpiderContainer Container { get; set; }
+    [Parameter] public Index IndexPage { get; set; }
+
+    void HandleNew()
+    {
+        if (Container.Processing)
+        {
+            return;
+        }
+
+        Container.Processing = true;
+        IndexPage.NewGame();
+        Container.Processing = false;
+    }
+}

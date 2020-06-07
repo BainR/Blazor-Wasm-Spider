@@ -1,0 +1,123 @@
+﻿@namespace BlazorWasmSpiderTouch.Models
+
+@if (TableauId > 0)
+{
+    <div class="tableau-@TableauId">
+        <div class="spider-column-base @stacksize" @onclick="HandleTableauClick">
+            @foreach (var card in Cards)
+            {
+                <PlayingCard PlayingCardModel="card" />
+            }
+        </div>
+    </div>
+}
+
+@if (StockId > 0 && Cards.Any())
+{
+    <div class="stock-@StockId">
+        <PlayingCard PlayingCardModel="Cards[0]" />
+    </div>
+}
+
+@if (FoundationId > 0)
+{
+<div class="foundation-@FoundationId" @onclick="HandleFoundationClick">
+    @if (Cards.Any())
+    {
+        <PlayingCard PlayingCardModel="Cards.Last()" />
+    }
+</div>
+}
+
+@code {
+
+    [CascadingParameter] SpiderContainer Container { get; set; }
+    [Parameter] public int TableauId { get; set; }
+    [Parameter] public int StockId { get; set; }
+    [Parameter] public int FoundationId { get; set; }
+    [Parameter] public List<PlayingCardModel> Cards { get; set; }
+    string stacksize = "small";
+
+    protected override void OnParametersSet()
+    {
+        if (TableauId > 0)
+        {
+            var tempCardList = Container.TableauPiles[TableauId - 1].ToList();
+
+            Cards.Clear();
+            Cards.AddRange(tempCardList);
+
+            if (Container.TableauPiles[TableauId - 1].Count <= 14)
+            {
+                stacksize = "small";
+            }
+            else if (Container.TableauPiles[TableauId - 1].Count <= 21)
+            {
+                stacksize = "medium";
+            }
+            else
+            {
+                stacksize = "large";
+            }
+        }
+    }
+
+    private async Task HandleTableauClick()
+    {
+        if (TableauId == 0 || Container.SelectedCard == null ||
+            Container.Processing || Container.TableauPiles[TableauId - 1].Any())
+        {
+            return;
+        }
+
+        Container.SelectedCard.IsSelected = false;
+        Container.Payload = Container.SelectedCard;
+        Container.SelectedCard = null;
+        await Container.UpdateAllPiles();
+
+        for (int i = Container.Payload.PileSequence; i < Container.TableauPiles[Container.Payload.TableauId - 1].Count; i++)
+        {
+            if (Container.TableauPiles[Container.Payload.TableauId - 1][i].Suit != Container.TableauPiles[Container.Payload.TableauId - 1][i - 1].Suit
+                || Container.TableauPiles[Container.Payload.TableauId - 1][i].Value != Container.TableauPiles[Container.Payload.TableauId - 1][i - 1].Value - 1)
+            {
+                return;
+            }
+        }
+
+        Container.Processing = true;
+
+        await Container.UpdateTableauIdAsync(TableauId);
+
+        Container.Processing = false;
+    }
+
+    private async Task HandleFoundationClick()
+    {
+        {
+            if (Container.FoundationPiles[FoundationId - 1].Any())
+            {
+                return;
+            }
+
+            if (Container.Payload.IsFaceDown)
+            {
+                return;
+            }
+
+            if (Container.TableauPiles[Container.Payload.TableauId - 1].Count != Container.Payload.PileSequence + 12)
+            {
+                return;
+            }
+
+            for (int i = 0; i < 13; i++)
+            {
+                if (Container.TableauPiles[Container.Payload.TableauId - 1][Container.Payload.PileSequence - 1 + i].Value != 13 - i)
+                {
+                    return;
+                }
+            }
+
+            await Container.UpdateFoundationAsync(FoundationId);
+        }
+    }
+}
