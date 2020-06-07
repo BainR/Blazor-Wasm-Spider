@@ -1,0 +1,4 @@
+# Trying to force WASM files to remain unchanged.
+_framework/* binary 
+_framework/bin/* binary 
+_framework/wasm/* binary 
