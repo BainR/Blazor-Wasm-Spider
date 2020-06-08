@@ -557,3 +557,17 @@ app {
 .large > .sequence-40 {
     grid-area: 40 / 1 / 67 / 2;
 }
+
+.help {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.help h3 {
+    font-size: 1.75rem;
+}
+
+.help h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+} 
