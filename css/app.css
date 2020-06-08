@@ -1,0 +1,559 @@
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+a, .btn-link {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+.top-row {
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.main {
+    flex: 1;
+}
+
+    .main .top-row {
+        background-color: #f7f7f7;
+        border-bottom: 1px solid #d6d5d5;
+        justify-content: space-between;
+    }
+
+        .main .top-row > h3 {
+            margin-bottom: 0;
+        }
+
+        .main .top-row > a {
+            margin-left: 1.5rem;
+        }
+
+.content {
+    padding-top: 1.1rem;
+}
+
+.undoButton {
+    position: fixed;
+    top: .7em;
+    left: 30em;
+}
+
+.resetButton {
+    position: fixed;
+    top: .7em;
+    left: 25em;
+}
+
+.newButton {
+    position: fixed;
+    top: .7em;
+    left: 20em;
+}
+
+.spider-wrapper {
+    background-color: forestgreen;
+    margin: auto;
+    height: calc(100vh - 6em);
+    width: calc(100vw - 5em);
+    max-width: calc(1.5 * (100vh - 6em));
+}
+
+.stock-foundation-row {
+    display: grid;
+    grid-template-columns: repeat(10, 10%);
+    width: 100%;
+    height: calc(1.5 * (100vh - 6em) / 10 * 3.5 / 2.5);
+    max-height: calc((100vw - 5em) / 10 * 3.5 / 2.5);
+}
+
+.tableau-row {
+    display: grid;
+    grid-template-columns: repeat(10, 10%);
+    height: calc((100vh - 6em) - (1.5 * (100vh - 6em) / 10 * 3.5 / 2.5));
+    width: 100%;
+}
+
+.stock {
+    grid-area: 1 / 1 / 2 / 3;
+    display: grid;
+    grid-template-columns: 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5%;
+    grid-template-rows: 100%;
+}
+
+.stock-5 {
+    grid-area: 1 / 1 / 2 / 5;
+}
+
+.stock-4 {
+    grid-area: 1 / 2 / 2 / 6;
+}
+
+.stock-3 {
+    grid-area: 1 / 3 / 2 / 7;
+}
+
+.stock-2 {
+    grid-area: 1 / 4 / 2 / 8;
+}
+
+.stock-1 {
+    grid-area: 1 / 5 / 2 / 9;
+}
+
+.foundation-1 {
+    grid-area: 1 / 3 / 2 / 4;
+    background-image: radial-gradient(greenyellow, forestgreen);
+}
+
+.foundation-2 {
+    grid-area: 1 / 4 / 2 / 5;
+    background-image: radial-gradient(greenyellow, forestgreen);
+}
+
+.foundation-3 {
+    grid-area: 1 / 5 / 2 / 6;
+    background-image: radial-gradient(greenyellow, forestgreen);
+}
+
+.foundation-4 {
+    grid-area: 1 / 6 / 2 / 7;
+    background-image: radial-gradient(greenyellow, forestgreen);
+}
+
+.foundation-5 {
+    grid-area: 1 / 7 / 2 / 8;
+    background-image: radial-gradient(greenyellow, forestgreen);
+}
+
+.foundation-6 {
+    grid-area: 1 / 8 / 2 / 9;
+    background-image: radial-gradient(greenyellow, forestgreen);
+}
+
+.foundation-7 {
+    grid-area: 1 / 9 / 2 / 10;
+    background-image: radial-gradient(greenyellow, forestgreen);
+}
+
+.foundation-8 {
+    grid-area: 1 / 10 / 2 / 11;
+    background-image: radial-gradient(greenyellow, forestgreen);
+}
+
+.tableau-1 {
+    grid-area: 1 / 1 / 2 / 2;
+}
+
+.tableau-2 {
+    grid-area: 1 / 2 / 2 / 3;
+}
+
+.tableau-3 {
+    grid-area: 1 / 3 / 2 / 4;
+}
+
+.tableau-4 {
+    grid-area: 1 / 4 / 2 / 5;
+}
+
+.tableau-5 {
+    grid-area: 1 / 5 / 2 / 6;
+}
+
+.tableau-6 {
+    grid-area: 1 / 6 / 2 / 7;
+}
+
+.tableau-7 {
+    grid-area: 1 / 7 / 2 / 8;
+}
+
+.tableau-8 {
+    grid-area: 1 / 8 / 2 / 9;
+}
+
+.tableau-9 {
+    grid-area: 1 / 9 / 2 / 10;
+}
+
+.tableau-10 {
+    grid-area: 1 / 10 / 2 / 11;
+}
+
+.playing-card {
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 2px;
+}
+
+.playing-card.selected {
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 2px;
+    background-color: blue;
+}
+
+.spider-column-base.small {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: repeat(18, 5.55%);
+}
+
+.small > .sequence-1 {
+    grid-area: 1 / 1 / 19 / 2;
+}
+
+.small > .sequence-2 {
+    grid-area: 2 / 1 / 19 / 2;
+}
+
+.small > .sequence-3 {
+    grid-area: 3 / 1 / 19 / 2;
+}
+
+.small > .sequence-4 {
+    grid-area: 4 / 1 / 19 / 2;
+}
+
+.small > .sequence-5 {
+    grid-area: 5 / 1 / 19 / 2;
+}
+
+.small > .sequence-6 {
+    grid-area: 6 / 1 / 19 / 2;
+}
+
+.small > .sequence-7 {
+    grid-area: 7 / 1 / 19 / 2;
+}
+
+.small > .sequence-8 {
+    grid-area: 8 / 1 / 19 / 2;
+}
+
+.small > .sequence-9 {
+    grid-area: 9 / 1 / 19 / 2;
+}
+
+.small > .sequence-10 {
+    grid-area: 10 / 1 / 19 / 2;
+}
+
+.small > .sequence-11 {
+    grid-area: 11 / 1 / 19 / 2;
+}
+
+.small > .sequence-12 {
+    grid-area: 12 / 1 / 19 / 2;
+}
+
+.small > .sequence-13 {
+    grid-area: 13 / 1 / 19 / 2;
+}
+
+.small > .sequence-14 {
+    grid-area: 14 / 1 / 19 / 2;
+}
+
+.spider-column-base.medium {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: repeat(36, 2.77%);
+}
+
+.medium > .sequence-1 {
+    grid-area: 1 / 1 / 37 / 2;
+}
+
+.medium > .sequence-2 {
+    grid-area: 2 / 1 / 37 / 2;
+}
+
+.medium > .sequence-3 {
+    grid-area: 3 / 1 / 37 / 2;
+}
+
+.medium > .sequence-4 {
+    grid-area: 4 / 1 / 37 / 2;
+}
+
+.medium > .sequence-5 {
+    grid-area: 5 / 1 / 37 / 2;
+}
+
+.medium > .sequence-6 {
+    grid-area: 6 / 1 / 37 / 2;
+}
+
+.medium > .sequence-7 {
+    grid-area: 7 / 1 / 37 / 2;
+}
+
+.medium > .sequence-8 {
+    grid-area: 8 / 1 / 37 / 2;
+}
+
+.medium > .sequence-9 {
+    grid-area: 9 / 1 / 37 / 2;
+}
+
+.medium > .sequence-10 {
+    grid-area: 10 / 1 / 37 / 2;
+}
+
+.medium > .sequence-11 {
+    grid-area: 11 / 1 / 37 / 2;
+}
+
+.medium > .sequence-12 {
+    grid-area: 12 / 1 / 37 / 2;
+}
+
+.medium > .sequence-13 {
+    grid-area: 13 / 1 / 37 / 2;
+}
+
+.medium > .sequence-14 {
+    grid-area: 14 / 1 / 37 / 2;
+}
+
+.medium > .sequence-15 {
+    grid-area: 15 / 1 / 37 / 2;
+}
+
+.medium > .sequence-16 {
+    grid-area: 16 / 1 / 37 / 2;
+}
+
+.medium > .sequence-17 {
+    grid-area: 17 / 1 / 37 / 2;
+}
+
+.medium > .sequence-18 {
+    grid-area: 18 / 1 / 37 / 2;
+}
+
+.medium > .sequence-19 {
+    grid-area: 19 / 1 / 37 / 2;
+}
+
+.medium > .sequence-20 {
+    grid-area: 20 / 1 / 37 / 2;
+}
+
+.medium > .sequence-21 {
+    grid-area: 21 / 1 / 37 / 2;
+}
+
+.spider-column-base.large {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: repeat(66, 1.5%);
+}
+
+.large > .sequence-1 {
+    grid-area: 1 / 1 / 67 / 2;
+}
+
+.large > .sequence-2 {
+    grid-area: 2 / 1 / 67 / 2;
+}
+
+.large > .sequence-3 {
+    grid-area: 3 / 1 / 67 / 2;
+}
+
+.large > .sequence-4 {
+    grid-area: 4 / 1 / 67 / 2;
+}
+
+.large > .sequence-5 {
+    grid-area: 5 / 1 / 67 / 2;
+}
+
+.large > .sequence-6 {
+    grid-area: 6 / 1 / 67 / 2;
+}
+
+.large > .sequence-7 {
+    grid-area: 7 / 1 / 67 / 2;
+}
+
+.large > .sequence-7 {
+    grid-area: 7 / 1 / 67 / 2;
+}
+
+.large > .sequence-8 {
+    grid-area: 8 / 1 / 67 / 2;
+}
+
+.large > .sequence-9 {
+    grid-area: 9 / 1 / 67 / 2;
+}
+
+.large > .sequence-10 {
+    grid-area: 10 / 1 / 67 / 2;
+}
+
+.large > .sequence-11 {
+    grid-area: 11 / 1 / 67 / 2;
+}
+
+.large > .sequence-12 {
+    grid-area: 12 / 1 / 67 / 2;
+}
+
+.large > .sequence-13 {
+    grid-area: 13 / 1 / 67 / 2;
+}
+
+.large > .sequence-14 {
+    grid-area: 14 / 1 / 67 / 2;
+}
+
+.large > .sequence-15 {
+    grid-area: 15 / 1 / 67 / 2;
+}
+
+.large > .sequence-16 {
+    grid-area: 16 / 1 / 67 / 2;
+}
+
+.large > .sequence-17 {
+    grid-area: 17 / 1 / 67 / 2;
+}
+
+.large > .sequence-18 {
+    grid-area: 18 / 1 / 67 / 2;
+}
+
+.large > .sequence-19 {
+    grid-area: 19 / 1 / 67 / 2;
+}
+
+.large > .sequence-20 {
+    grid-area: 20 / 1 / 67 / 2;
+}
+
+.large > .sequence-21 {
+    grid-area: 21 / 1 / 67 / 2;
+}
+
+.large > .sequence-22 {
+    grid-area: 22 / 1 / 67 / 2;
+}
+
+.large > .sequence-23 {
+    grid-area: 23 / 1 / 67 / 2;
+}
+
+.large > .sequence-24 {
+    grid-area: 24 / 1 / 67 / 2;
+}
+
+.large > .sequence-25 {
+    grid-area: 25 / 1 / 67 / 2;
+}
+
+.large > .sequence-26 {
+    grid-area: 26 / 1 / 67 / 2;
+}
+
+.large > .sequence-27 {
+    grid-area: 27 / 1 / 67 / 2;
+}
+
+.large > .sequence-28 {
+    grid-area: 28 / 1 / 67 / 2;
+}
+
+.large > .sequence-29 {
+    grid-area: 29 / 1 / 67 / 2;
+}
+
+.large > .sequence-30 {
+    grid-area: 30 / 1 / 67 / 2;
+}
+
+.large > .sequence-31 {
+    grid-area: 31 / 1 / 67 / 2;
+}
+
+.large > .sequence-32 {
+    grid-area: 32 / 1 / 67 / 2;
+}
+
+.large > .sequence-33 {
+    grid-area: 33 / 1 / 67 / 2;
+}
+
+.large > .sequence-34 {
+    grid-area: 34 / 1 / 67 / 2;
+}
+
+.large > .sequence-35 {
+    grid-area: 35 / 1 / 67 / 2;
+}
+
+.large > .sequece-36 {
+    grid-area: 36 / 1 / 67 / 2;
+}
+
+.large > .sequence-37 {
+    grid-area: 37 / 1 / 67 / 2;
+}
+
+.large > .sequence-38 {
+    grid-area: 38 / 1 / 67 / 2;
+}
+
+.large > .sequence-39 {
+    grid-area: 39 / 1 / 67 / 2;
+}
+
+.large > .sequence-40 {
+    grid-area: 40 / 1 / 67 / 2;
+}
