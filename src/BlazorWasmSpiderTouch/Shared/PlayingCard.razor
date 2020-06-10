@@ -2,7 +2,7 @@
 
 @if (PlayingCardModel.TableauId > 0)
 {
-    <div id="@PlayingCardModel.Id" class="spider-column sequence-@PlayingCardModel.PileSequence" 
+    <div id="@PlayingCardModel.Id" class="spider-column sequence-@PlayingCardModel.PileSequence"
          @onclick="@((e) => HandleColumnClick(@PlayingCardModel))">
         <img class="playing-card @selected" src="@PlayingCardModel.ImageUrl" alt="@PlayingCardModel.Description" title="@PlayingCardModel.Description" />
     </div>
