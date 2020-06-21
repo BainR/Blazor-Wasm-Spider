@@ -43,6 +43,11 @@
             return;
         }
 
+        if (Container.SelectedCard == null && selectedPlayingCard.IsFaceDown)
+        {
+            return;
+        }
+
         if (Container.SelectedCard == null && !selectedPlayingCard.IsFaceDown)
         {
             selectedPlayingCard.IsSelected = true;
